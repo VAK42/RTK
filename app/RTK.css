@@ -1,0 +1,36 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-size: 1vw;
+    box-sizing: border-box;
+    list-style-type: none;
+}
+
+.Carousel .swiper-button-next,
+.Carousel .swiper-button-prev {
+    color: #5EEAD4;
+}
+
+.Carousel .swiper-pagination-bullet-active {
+    background-color: #5EEAD4;
+}
+
+.anmt {
+    position: relative;
+    overflow: hidden;
+}
+
+.anmt:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    border-bottom: 2px solid #5EEAD4;
+    transition: left 0.5s;
+}
+
+.anmt:hover:before {
+    left: 0;
+}

@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum ProductType {
+  REM_VAI
+  REM_CAU_VONG
+  REM_GO
+  REM_CUON
+  REM_LA_LAT
+  KHAC
+}
+
+model Product {
+  id    String @id
+  name  String
+  price Int
+  desc  String
+  img   String
+  type  ProductType
+}
