@@ -329,7 +329,7 @@ export default function Admin() {
         </div>
         {result !== null &&
           (result ? (
-            <div className="text-teal-500 text-center">Successfully!</div>
+            <div className="text-teal-500 text-center">OK!</div>
           ) : (
             <div className="text-red-500 text-center">Failed!</div>
           ))}
