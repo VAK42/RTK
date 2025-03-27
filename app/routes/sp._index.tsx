@@ -84,7 +84,7 @@ export default function SP() {
     { sp: "Rèm Gỗ", type: "REM_GO" },
     { sp: "Rèm Cuốn", type: "REM_CUON" },
     { sp: "Rèm Lá Lật", type: "REM_LA_LAT" },
-    { sp: "Rèm Khác", type: "KHAC" },
+    { sp: "Rèm Khác", type: "REM_KHAC" },
   ];
   const sort = [
     { value: "id", order: "asc", label: "Mã SP Tăng Dần" },

@@ -8,10 +8,6 @@ type Product = {
   price: number;
   desc: string;
   img: string;
-};
-
-type LoaderData = {
-  product?: Product;
   error?: string;
 };
 
@@ -40,27 +36,28 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function SanPham() {
-  const data: LoaderData = useLoaderData();
+  const data: Product = useLoaderData();
+  console.log(data)
   return (
     <main className="w-4/5 min-h-screen pt-20 m-auto">
       {data.error ? (
         <div className="text-red-500 text-2xl text-center">{data.error}</div>
-      ) : data.product ? (
+      ) : (
         <div className="flex">
           <div className="w-1/2 pt-10">
             <img
-              src={data.product.img}
-              alt={data.product.name}
-              className="w-11/12 border-2 border-teal-500 rounded"
+              src={data.img}
+              alt={data.name}
+              className="w-11/12 border-2 border-black rounded"
             />
           </div>
           <div className="w-1/2 pt-10">
             <div className="text-lg text-red-500 w-fit border-2 border-teal-500 rounded px-2">
-              Mã: {data.product.id}
+              Mã: {data.id}
             </div>
-            <div className="text-4xl py-2">{data.product.name}</div>
+            <div className="text-4xl py-2">{data.name}</div>
             <div className="text-2xl text-green-500 my-2">
-              {Intl.NumberFormat("vi-VN").format(data.product.price)} VND
+              {Intl.NumberFormat("vi-VN").format(data.price)} VND
             </div>
             <div className="w-fit bg-sky-100 border-2 border-teal-500 rounded my-2">
               <i className="fa-light fa-phone mx-2 text-xl"></i>
@@ -70,15 +67,15 @@ export default function SanPham() {
             </div>
           </div>
         </div>
-      ) : null}
-      {data.product && (
+      )}
+      {data && (
         <div className="pt-10">
           <div className="text-2xl text-emerald-800 before:content-[''] before:grow before:border-b-2 before:border-teal-500 after:content-[''] after:grow after:border-b-2 after:border-teal-500 flex justify-center items-center">
             Thông Tin Sản Phẩm
           </div>
           <div
             className="text-xl py-4"
-            dangerouslySetInnerHTML={{ __html: data.product.desc }}
+            dangerouslySetInnerHTML={{ __html: data.desc }}
           />
         </div>
       )}

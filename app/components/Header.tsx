@@ -8,15 +8,14 @@ export default function Header() {
     { sp: "Rèm Gỗ", url: "/sp?type=REM_GO" },
     { sp: "Rèm Cuốn", url: "/sp?type=REM_CUON" },
     { sp: "Rèm Lá Lật", url: "/sp?type=REM_LA_LAT" },
-    { sp: "Rèm Khác", url: "/sp?type=KHAC" },
+    { sp: "Rèm Khác", url: "/sp?type=REM_KHAC" },
   ];
   const [sMenuSP, setSMenuSP] = useState(false);
   const lct = useLocation();
   return (
     <header
-      className={`w-full h-12 text-white flex fixed z-50 ${
-        lct.pathname === "/" ? "bg-[rgba(0,0,0,0.8)]" : "bg-black"
-      }`}
+      className={`w-full h-12 text-white flex fixed z-50 ${lct.pathname === "/" ? "bg-[rgba(0,0,0,0.8)]" : "bg-black"
+        }`}
     >
       <div className="w-1/2">
         <div className="w-1/2 h-full flex justify-center items-center">
@@ -27,11 +26,10 @@ export default function Header() {
         <div className="w-1/4 flex justify-center items-center">
           <Link
             to="/"
-            className={`h-full flex justify-center items-center ${
-              lct.pathname === "/"
-                ? "text-teal-300 border-b-2 border-teal-300"
-                : "hover:text-teal-300 anmt"
-            }`}
+            className={`h-full flex justify-center items-center ${lct.pathname === "/"
+              ? "text-teal-300 border-b-2 border-teal-300"
+              : "hover:text-teal-300 anmt"
+              }`}
           >
             <i className="fa-light fa-house mr-2"></i>
             Trang Chủ
@@ -39,11 +37,10 @@ export default function Header() {
         </div>
         <div className="w-1/4 flex justify-center items-center">
           <div
-            className={`h-full hover:cursor-pointer ${
-              lct.pathname === "/sp"
-                ? "text-teal-300 border-b-2 border-teal-300"
-                : "hover:text-teal-300"
-            }`}
+            className={`h-full hover:cursor-pointer ${lct.pathname === "/sp"
+              ? "text-teal-300 border-b-2 border-teal-300"
+              : "hover:text-teal-300"
+              }`}
             onMouseEnter={() => setSMenuSP(true)}
             onMouseLeave={() => setSMenuSP(false)}
           >
@@ -75,11 +72,10 @@ export default function Header() {
         <div className="w-1/4 flex justify-center items-center">
           <Link
             to="/gt"
-            className={`h-full flex justify-center items-center ${
-              lct.pathname === "/gt"
-                ? "text-teal-300 border-b-2 border-teal-300"
-                : "hover:text-teal-300 anmt"
-            }`}
+            className={`h-full flex justify-center items-center ${lct.pathname === "/gt"
+              ? "text-teal-300 border-b-2 border-teal-300"
+              : "hover:text-teal-300 anmt"
+              }`}
           >
             <i className="fa-light fa-align-justify mr-2"></i>
             Giới Thiệu
@@ -88,11 +84,10 @@ export default function Header() {
         <div className="w-1/4 flex justify-center items-center">
           <Link
             to="/lh"
-            className={`h-full flex justify-center items-center ${
-              lct.pathname === "/lh"
-                ? "text-teal-300 border-b-2 border-teal-300"
-                : "hover:text-teal-300 anmt"
-            }`}
+            className={`h-full flex justify-center items-center ${lct.pathname === "/lh"
+              ? "text-teal-300 border-b-2 border-teal-300"
+              : "hover:text-teal-300 anmt"
+              }`}
           >
             <i className="fa-light fa-user mr-2"></i>
             Liên Hệ

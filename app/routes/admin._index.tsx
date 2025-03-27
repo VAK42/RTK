@@ -8,6 +8,10 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import { useEffect, useMemo, useState } from "react";
+import fs from "fs";
+import path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { Button, Input, Select } from "@material-tailwind/react";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../utils/db.server";
@@ -76,14 +80,24 @@ export const action: ActionFunction = async ({ request }) => {
     const session = await sessionStorage().getSession(
       request.headers.get("Cookie")
     );
-    const data = new URLSearchParams(await request.text());
+    const data = await request.formData();
     const action = data.get("_action");
-    const id = data.get("id");
-    const name = data.get("name");
-    const price = data.get("price");
-    const desc = data.get("desc");
-    const img = data.get("img");
-    const type = data.get("type");
+    const id = data.get("id")?.toString();
+    const name = data.get("name")?.toString();
+    const price = data.get("price")?.toString();
+    const desc = data.get("desc")?.toString();
+    const type = data.get("type")?.toString();
+    const img = data.get("img") as File;
+    const file = fileURLToPath(import.meta.url);
+    const dir = dirname(file);
+    let url = "";
+    if (img && img.size > 0) {
+      const buffer = await img.arrayBuffer();
+      const name = `${Date.now()}${img.name}`;
+      const lct = path.join(dir, "..", "IMG", name);
+      fs.writeFileSync(lct, Buffer.from(buffer));
+      url = `/app/IMG/${name}`;
+    }
     switch (action) {
       case "logout":
         const cookie = await sessionStorage().destroySession(session);
@@ -97,20 +111,29 @@ export const action: ActionFunction = async ({ request }) => {
             name: name!,
             price: parseInt(price!),
             desc: desc!,
-            img: img!,
+            img: url,
             type: type!,
           },
         });
         return { success: true };
       case "update":
         if (id) {
+          const pd = await prisma.product.findUnique({
+            where: { id },
+          });
+          if (pd && pd.img) {
+            const url = path.join(dir, "../..", pd.img);
+            if (fs.existsSync(url)) {
+              fs.unlinkSync(url);
+            }
+          }
           await prisma.product.update({
             where: { id },
             data: {
               name: name!,
               price: parseInt(price!),
               desc: desc!,
-              img: img!,
+              img: url,
               type: type!,
             },
           });
@@ -118,6 +141,15 @@ export const action: ActionFunction = async ({ request }) => {
         return { success: true };
       case "delete":
         if (id) {
+          const pd = await prisma.product.findUnique({
+            where: { id },
+          });
+          if (pd && pd.img) {
+            const url = path.join(dir, "../..", pd.img);
+            if (fs.existsSync(url)) {
+              fs.unlinkSync(url);
+            }
+          }
           await prisma.product.delete({
             where: { id },
           });
@@ -453,7 +485,15 @@ export default function Admin() {
           </div>
         )}
         {mode === "create" && (
-          <Form method="post" className="mt-2">
+          <Form method="post" encType="multipart/form-data" className="mt-2">
+            <input
+              name="img"
+              id="img"
+              type="file"
+              className="hidden"
+              required
+            />
+            <label htmlFor="img"><i className="fa-solid fa-cloud-arrow-up text-4xl cursor-pointer"></i></label>
             <Input
               name="id"
               placeholder="ID"
@@ -470,12 +510,6 @@ export default function Admin() {
               name="price"
               placeholder="Price"
               type="number"
-              className="w-1/3 border-2 border-black my-2"
-              required
-            />
-            <Input
-              name="img"
-              placeholder="Image"
               className="w-1/3 border-2 border-black my-2"
               required
             />
@@ -510,49 +544,57 @@ export default function Admin() {
           </Form>
         )}
         {mode === "update" && (
-          <Form method="post" className="mt-2">
-            <Input
-              name="id"
-              placeholder="ID"
-              defaultValue={pd?.id}
-              className="w-1/3 border-2 border-black my-2"
-              required
-            />
-            <Input
-              name="name"
-              placeholder="Name"
-              defaultValue={pd?.name}
-              className="w-1/3 border-2 border-black my-2"
-              required
-            />
-            <Input
-              name="price"
-              placeholder="Price"
-              type="number"
-              defaultValue={pd?.price}
-              className="w-1/3 border-2 border-black my-2"
-              required
-            />
-            <Input
-              name="img"
-              placeholder="Image"
-              defaultValue={pd?.img}
-              className="w-1/3 border-2 border-black my-2"
-              required
-            />
-            <Select name="type" value={pdType} onValueChange={setPdType}>
-              <Select.Trigger
-                placeholder="Type"
-                className="w-1/3 border-2 border-black my-2"
-              />
-              <Select.List className="border-2 border-black">
-                {MenuSP.map((item) => (
-                  <Select.Option key={item.type} value={item.type}>
-                    {item.sp}
-                  </Select.Option>
-                ))}
-              </Select.List>
-            </Select>
+          <Form method="post" encType="multipart/form-data" className="mt-2">
+            <div className="flex my-4">
+              <div className="w-1/2">
+                <input
+                  name="img"
+                  id="img"
+                  type="file"
+                  className="hidden"
+                  required
+                />
+                <label htmlFor="img"><i className="fa-solid fa-cloud-arrow-up text-4xl cursor-pointer"></i></label>
+                <Input
+                  name="id"
+                  placeholder="ID"
+                  defaultValue={pd?.id}
+                  className="w-2/3 border-2 border-black my-2"
+                  required
+                />
+                <Input
+                  name="name"
+                  placeholder="Name"
+                  defaultValue={pd?.name}
+                  className="w-2/3 border-2 border-black my-2"
+                  required
+                />
+                <Input
+                  name="price"
+                  placeholder="Price"
+                  type="number"
+                  defaultValue={pd?.price}
+                  className="w-2/3 border-2 border-black my-2"
+                  required
+                />
+                <Select name="type" value={pdType} onValueChange={setPdType}>
+                  <Select.Trigger
+                    placeholder="Type"
+                    className="w-2/3 border-2 border-black my-2"
+                  />
+                  <Select.List className="border-2 border-black">
+                    {MenuSP.map((item) => (
+                      <Select.Option key={item.type} value={item.type}>
+                        {item.sp}
+                      </Select.Option>
+                    ))}
+                  </Select.List>
+                </Select>
+              </div>
+              <div className="w-1/2">
+                <img src={pd?.img} alt="RTK" className="border-2 border-black" />
+              </div>
+            </div>
             <Tiptap data={content} onEdit={setContent} />
             <input type="hidden" name="desc" value={content} />
             <input type="hidden" name="_action" value="update" />
